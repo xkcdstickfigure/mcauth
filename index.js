@@ -1,3 +1,4 @@
+// Create Server
 const mc = require("minecraft-protocol");
 const server = mc.createServer({ maxPlayers: 1 });
 
@@ -17,3 +18,12 @@ const updateInfo = () => {
 };
 setInterval(updateInfo, 1000);
 updateInfo();
+
+// Player Login
+server.on("login", (client) => {
+  console.log({
+    id: client.profile.id,
+    username: client.profile.name,
+  });
+  client.end("test");
+});
