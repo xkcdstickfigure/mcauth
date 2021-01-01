@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "format": "prettier --write \"**/*.js\""
+  },
+  "dependencies": {
+    "minecraft-protocol": "^1.22.0"
+  },
+  "devDependencies": {
+    "prettier": "^2.2.1"
+  }
+}
