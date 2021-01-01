@@ -46,6 +46,23 @@ const server = mc.createServer({
 const { v4: uuid } = require("uuid");
 const { generate: random } = require("randomstring");
 server.on("login", async (client) => {
+  const player = client.profile.id;
+
+  // Ratelimit
+  if (
+    (await Token.count({
+      where: {
+        player,
+        createdAt: {
+          [Sequelize.Op.gte]: new Date().getTime() - 120000,
+        },
+      },
+    })) >= 3
+  )
+    return client.end(
+      "\u00a7cSlow down! You've made too many tokens, try again in a few minutes."
+    );
+
   // Generate Token
   const token = await Token.create({
     id: uuid(),
@@ -54,11 +71,12 @@ server.on("login", async (client) => {
       readable: true,
       capitalization: "uppercase",
     }),
-    player: client.profile.id,
+    player,
   });
   client.end(
-    `\u00a77Your token is \u00a7a${token.token}\n\n` +
-      `\u00a7cDo not enter this anywhere other than Alles.\n` +
-      `Expires in 5 minutes.`
+    "\u00a77Your token is \u00a7a" +
+      token.token +
+      "\n\n\u00a7cDo not enter this anywhere other than Alles." +
+      "\nExpires in 5 minutes."
   );
 });
